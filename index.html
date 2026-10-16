@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangla to English Translation Practice</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f7;
+            margin: 0;
+            padding: 1rem;
+        }
+        .main-layout {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1100px;
+            padding: 1rem;
+        }
+        .container {
+            width: 90%;
+            max-width: 650px;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+            text-align: center;
+            flex-shrink: 0;
+        }
+        h1 {
+            color: #1d1d1f;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        #bengali-sentence {
+            font-size: 1.6rem;
+            line-height: 1.6;
+            margin: 1.5rem 0;
+            color: #333;
+            padding: 1.5rem;
+            background-color: #f5f5f7;
+            border-radius: 8px;
+            text-align: left;
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            height: 120px;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+        }
+        .buttons {
+            margin-top: 1.5rem;
+        }
+        button {
+            padding: 0.8rem 1.6rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #007aff;
+            color: #fff;
+            margin: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #d2d2d7;
+            cursor: not-allowed;
+        }
+        #next-btn {
+            background-color: #34c759;
+        }
+        #next-btn:hover:not(:disabled) {
+            background-color: #2ca349;
+        }
+        /* NEW: Styles for the Again button */
+        #again-btn {
+            background-color: transparent;
+            color: #007aff;
+            border: 1px solid #007aff;
+        }
+        #again-btn:hover:not(:disabled) {
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+        #skip-btn {
+            background-color: #8e8e93;
+        }
+        #skip-btn:hover:not(:disabled) {
+            background-color: #636366;
+        }
+        /* NEW: Styles for the delete button */
+        #delete-sentence-btn {
+            background-color: #ff3b30;
+        }
+        #delete-sentence-btn:hover:not(:disabled) {
+            background-color: #c70000;
+        }
+        #results {
+            margin-top: 2rem;
+            text-align: left;
+            padding: 1.5rem;
+            background-color: #f5f5f7;
+            border-radius: 8px;
+        }
+        .hidden {
+            display: none;
+        }
+        #score {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1d1d1f;
+        }
+        #evaluation, #correction {
+            margin-top: 0.75rem;
+            line-height: 1.5;
+        }
+        #spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007aff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 1.5rem auto 0;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .goals-container {
+            width: 100%;
+            max-width: 300px;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+            text-align: left;
+        }
+        .goals-container h2 {
+            color: #1d1d1f;
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        /* NEW: Authentication Styles */
+        #auth-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        #user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        #user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        #user-info span {
+            font-weight: 500;
+        }
+        #logout-btn {
+            background-color: #ff3b30;
+            margin-left: 10px;
+        }
+        #login-btn {
+            background-color: #34c759;
+        }
+
+        .goal {
+            margin-bottom: 1.5rem;
+        }
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6e6e73;
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: #f5f5f7;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #34c759;
+            border-radius: 6px;
+            transition: width 0.5s ease-in-out;
+        }
+        .rank-section {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #e5e5e5;
+        }
+        .rank-section h3 {
+            color: #1d1d1f;
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        #rank-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #007aff;
+            margin: 0.5rem 0;
+        }
+        #rank-score {
+            font-size: 1rem;
+            color: #6e6e73;
+            margin-top: 0.5rem;
+        }
+
+        /* MODIFIED: Styles for Current Error Display */
+        .error-analysis-section {
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #e5e5e5;
+        }
+        .error-analysis-section h3 {
+            color: #1d1d1f;
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        #current-errors-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .error-tag {
+            background-color: #ff3b30;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* MODIFIED: Hall of Fame Styles */
+        .hall-of-fame-section {
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #e5e5e5;
+            background: linear-gradient(180deg, #f9f9f9 0%, #ffffff 100%);
+        }
+        .hall-of-fame-section h3 {
+            color: #1d1d1f;
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        #hall-of-fame-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .hof-user {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .hof-user:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .hof-user:hover {
+            background-color: #f5f5f7;
+        }
+        .hof-user-1 {
+            background-color: #fffbeb;
+            border-left: 4px solid #facc15;
+        }
+        .hof-user-2 {
+            background-color: #f8fafc;
+            border-left: 4px solid #d1d5db;
+        }
+        .hof-user-3 {
+            background-color: #fdf8f6;
+            border-left: 4px solid #f97316;
+        }
+        .hof-user img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .hof-user-info {
+            flex-grow: 1;
+        }
+        .hof-user-name {
+            font-weight: 600;
+            color: #1d1d1f;
+            font-size: 0.95rem;
+        }
+        .hof-user-details {
+            font-size: 0.8rem;
+            color: #6e6e73;
+        }
+
+        /* NEW: Word List Section Styles */
+        .word-list-section {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #e5e5e5;
+        }
+        #my-words-btn {
+            background-color: #8e8e93;
+            width: 100%;
+        }
+        #my-words-btn:hover:not(:disabled) {
+            background-color: #636366;
+        }
+        #my-words-btn:not(:disabled) {
+             background-color: #007aff;
+        }
+
+        /* NEW: Word List Modal Styles */
+        #word-list-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .modal-close {
+            color: #aaa;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #1d1d1f;
+        }
+        .modal-content h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #1d1d1f;
+        }
+        #saved-words-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0 0;
+            overflow-y: auto;
+        }
+        #saved-words-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid #e5e5e5;
+            font-size: 1.1rem;
+        }
+        #saved-words-list li:last-child {
+            border-bottom: none;
+        }
+        .delete-word-btn {
+            background: none;
+            border: none;
+            color: #ff3b30;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            margin: 0;
+            line-height: 1;
+        }
+        .delete-word-btn:hover {
+            color: #c70000;
+        }
+
+
+        @media (max-width: 950px) {
+            .main-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+            .goals-container {
+                max-width: 650px;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <div class="container">
+            <h1>Translate the Sentence</h1>
+            <div id="bengali-sentence">Please log in to start practicing.</div>
+            <textarea id="english-translation" placeholder="Type your English translation here..." disabled></textarea>
+            <div class="buttons">
+                <button id="submit-btn" disabled>Check My Translation</button>
+                <button id="again-btn" class="hidden">Try Again</button>
+                <button id="next-btn" class="hidden">Next</button>
+                <button id="skip-btn" disabled>Skip</button>
+                <button id="delete-sentence-btn" class="hidden">Delete</button>
+            </div>
+            <div id="spinner" class="hidden"></div>
+            <div id="results" class="hidden">
+                <p id="score"></p>
+                <p><strong>Feedback:</strong> <span id="evaluation"></span></p>
+                <p><strong>Suggested Correction:</strong> <span id="correction"></span></p>
+            </div>
+        </div>
+
+        <div class="goals-container">
+             <div id="auth-container">
+                  <button id="login-btn">Sign in with Google</button>
+                  <div id="user-info" class="hidden">
+                        <img id="user-photo" src="" alt="User photo">
+                        <span id="user-name"></span>
+                        <button id="logout-btn">Logout</button>
+                  </div>
+             </div>
+
+            <h2>Your Progress</h2>
+            <div class="goal">
+                <div class="goal-header">
+                    <span>Daily Goal</span>
+                    <span id="daily-progress-text">0 / 100</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="daily-progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+            <div class="goal">
+                <div class="goal-header">
+                    <span id="weekly-goal-label">Weekly Goal</span>
+                    <span id="weekly-progress-text">0 / 1000</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="weekly-progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="rank-section">
+                <h3>Your Rank</h3>
+                <p id="rank-name">Second Lieutenant</p>
+                <p id="rank-score">Total Score: 0</p>
+            </div>
+
+            <!-- NEW: Word List Section -->
+            <div class="word-list-section">
+                <button id="my-words-btn" disabled>My Word List</button>
+            </div>
+
+            <div class="hall-of-fame-section">
+                <h3>Hall of Fame</h3>
+                <ul id="hall-of-fame-list">
+                    </ul>
+            </div>
+
+            <div class="error-analysis-section hidden">
+                <h3>Errors in this Translation</h3>
+                <div id="current-errors-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Word List Modal -->
+    <div id="word-list-modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>My Saved Words</h2>
+            <ul id="saved-words-list">
+                <!-- Words will be dynamically inserted here -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="sentences.js"></script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // --- Configuration ---
+        // Deploy cloudflare-worker/worker.js, then paste its URL here.
+        // Keep the Groq API key on the Worker as a secret; never put it in this file.
+        const AI_PROXY_URL = "https://workers-playground-dark-sky-b3b9.akibzilan.workers.dev/";
+
+        // IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+        const firebaseConfig = {
+          apiKey: "AIzaSyByvJfQjB38PkBAfY9wvtT9T7-RAhSGHjQ",
+          authDomain: "translation-798e4.firebaseapp.com",
+          projectId: "translation-798e4",
+          storageBucket: "translation-798e4.appspot.com",
+          messagingSenderId: "901427739113",
+          appId: "1:901427739113:web:eb48bef88bf58d3236f378",
+          measurementId: "G-9FRPLN921M"
+        };
+
+        const DAILY_GOAL = 100;
+        const WEEKLY_GOAL = 1000;
+
+        const RANKS = [ { name: 'General', minScore: 10000 }, { name: 'Lieutenant General', minScore: 6600 }, { name: 'Major General', minScore: 4100 }, { name: 'Brigadier General', minScore: 2600 }, { name: 'Colonel', minScore: 1600 }, { name: 'Lieutenant Colonel', minScore: 1000 }, { name: 'Major', minScore: 600 }, { name: 'Captain', minScore: 300 }, { name: 'First Lieutenant', minScore: 100 }, { name: 'Second Lieutenant', minScore: 0 }];
+        const ERROR_CRITERIA = [ 'Incorrect Word Choice', 'Omission or Addition', 'Incorrect Tense or Aspect', 'Article Errors', 'Mistranslating Idioms and Proverbs', 'Incorrect Register or Formality', 'Loss of Nuance or Connotation', 'incorrect Word Order', 'Preposition Errors', 'Literal Translation' ];
+
+        // --- DOM Elements ---
+        const bengaliSentenceEl = document.getElementById('bengali-sentence');
+        const englishTranslationEl = document.getElementById('english-translation');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const againBtn = document.getElementById('again-btn'); // NEW
+        const skipBtn = document.getElementById('skip-btn');
+        const deleteSentenceBtn = document.getElementById('delete-sentence-btn'); // NEW
+        const resultsEl = document.getElementById('results');
+        const scoreEl = document.getElementById('score');
+        const evaluationEl = document.getElementById('evaluation');
+        const correctionEl = document.getElementById('correction');
+        const spinner = document.getElementById('spinner');
+        const dailyProgressBar = document.getElementById('daily-progress-bar');
+        const dailyProgressText = document.getElementById('daily-progress-text');
+        const weeklyProgressBar = document.getElementById('weekly-progress-bar');
+        const weeklyProgressText = document.getElementById('weekly-progress-text');
+        const weeklyGoalLabel = document.getElementById('weekly-goal-label');
+        const rankNameEl = document.getElementById('rank-name');
+        const rankScoreEl = document.getElementById('rank-score');
+        const errorAnalysisSection = document.querySelector('.error-analysis-section');
+        const currentErrorsContainer = document.getElementById('current-errors-container');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const authContainer = document.getElementById('auth-container');
+        const userInfo = document.getElementById('user-info');
+        const userNameEl = document.getElementById('user-name');
+        const userPhotoEl = document.getElementById('user-photo');
+        const hallOfFameList = document.getElementById('hall-of-fame-list');
+        // NEW: Word List DOM Elements
+        const myWordsBtn = document.getElementById('my-words-btn');
+        const wordListModal = document.getElementById('word-list-modal');
+        const closeModalBtn = document.querySelector('.modal-close');
+        const savedWordsList = document.getElementById('saved-words-list');
+
+
+        // --- Firebase Initialization ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        let userData = {}; // Holds all user progress data from Firestore
+        let currentSentence;
+        let currentSentenceIndex = -1;
+        let firestoreUnsubscribe = null; // To hold the listener cleanup function
+        let hallOfFameUnsubscribe = null; // NEW: For Hall of Fame listener
+        let isInitialLoad = true;
+
+        // --- Date Helper Functions (Unchanged) ---
+        function getTodaysDateString() { return new Date().toISOString().split('T')[0]; }
+        function getWeekStartDateString() {
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+            const monday = new Date(new Date(now).setDate(diff));
+            return monday.toISOString().split('T')[0];
+        }
+
+        // --- CORRECTED: Real-time Firestore Listener ---
+        function setupFirestoreListener(userId) {
+            if (firestoreUnsubscribe) {
+                firestoreUnsubscribe(); // Detach any old listener
+            }
+
+            const docRef = doc(db, "users", userId);
+            firestoreUnsubscribe = onSnapshot(docRef, (docSnap) => {
+                let needsWrite = false;
+
+                if (docSnap.exists()) {
+                    userData = docSnap.data();
+
+                    // NEW: Check if user profile needs an update
+                    if (userData.displayName !== currentUser.displayName || userData.photoURL !== currentUser.photoURL) {
+                        userData.displayName = currentUser.displayName;
+                        userData.photoURL = currentUser.photoURL;
+                        needsWrite = true;
+                    }
+
+                    const todayStr = getTodaysDateString();
+                    const weekStartStr = getWeekStartDateString();
+
+                    if (!userData.dailyScoreData) {
+                        userData.dailyScoreData = { date: todayStr, score: 0 };
+                        needsWrite = true;
+                    }
+                    if (!userData.weeklyScoreData) {
+                        userData.weeklyScoreData = { weekStartDate: weekStartStr, score: 0 };
+                        needsWrite = true;
+                    }
+
+                    if (userData.dailyScoreData.date !== todayStr) {
+                        userData.dailyScoreData = { date: todayStr, score: 0 };
+                        needsWrite = true;
+                    }
+                    if (userData.weeklyScoreData.weekStartDate !== weekStartStr) {
+                        userData.weeklyScoreData = { weekStartDate: weekStartStr, score: 0 };
+                        needsWrite = true;
+                    }
+                    // Ensure usedTranslationIndices exists for older user profiles.
+                    // Without this, getNewSentence() calls .push() on undefined.
+                    if (!Array.isArray(userData.usedTranslationIndices)) {
+                        userData.usedTranslationIndices = [];
+                        needsWrite = true;
+                    }
+                    // NEW: Ensure savedWords array exists
+                    if (!Array.isArray(userData.savedWords)) {
+                        userData.savedWords = [];
+                        needsWrite = true;
+                    }
+                    // NEW: Ensure deletedSentenceIndices array exists
+                    if (!Array.isArray(userData.deletedSentenceIndices)) {
+                        userData.deletedSentenceIndices = [];
+                        needsWrite = true;
+                    }
+
+                } else {
+                    // Set default data for a new user
+                    userData = {
+                        displayName: currentUser.displayName,
+                        photoURL: currentUser.photoURL,
+                        totalScore: 0,
+                        dailyScoreData: { date: getTodaysDateString(), score: 0 },
+                        weeklyScoreData: { weekStartDate: getWeekStartDateString(), score: 0 },
+                        usedTranslationIndices: [],
+                        savedWords: [], // NEW: Initialize for new users
+                        deletedSentenceIndices: [] // NEW: Initialize for new users
+                    };
+                    needsWrite = true;
+                }
+
+                if (needsWrite) {
+                    setDoc(docRef, userData, { merge: true });
+                    // FIX: The 'return' statement was removed from here.
+                    // Previously, the function would exit here if data needed to be written,
+                    // preventing the sentence from being displayed on the first load for a new user.
+                    // Now, it writes the data and continues to update the UI immediately.
+                }
+
+                updateAllUI();
+
+                if (isInitialLoad) {
+                    displaySentence();
+                    isInitialLoad = false;
+                }
+            });
+        }
+
+        // MODIFIED: Hall of Fame Listener
+        function setupHallOfFameListener() {
+            if (hallOfFameUnsubscribe) {
+                hallOfFameUnsubscribe();
+            }
+
+            const usersRef = collection(db, "users");
+            hallOfFameUnsubscribe = onSnapshot(usersRef, (querySnapshot) => {
+                const users = [];
+                querySnapshot.forEach((doc) => {
+                    users.push(doc.data());
+                });
+
+                const currentWeekStart = getWeekStartDateString();
+                const weeklyParticipants = users.filter(user => 
+                    user.weeklyScoreData &&
+                    user.weeklyScoreData.weekStartDate === currentWeekStart &&
+                    (user.weeklyScoreData.score || 0) > 0
+                );
+
+                weeklyParticipants.sort((a, b) => (b.weeklyScoreData.score || 0) - (a.weeklyScoreData.score || 0));
+
+                const topUsers = weeklyParticipants.slice(0, 10);
+
+                hallOfFameList.innerHTML = '';
+
+                if (topUsers.length === 0) {
+                    hallOfFameList.innerHTML = '<li style="text-align: center; color: #6e6e73; padding: 1rem 0;">No participants this week yet. Be the first!</li>';
+                    return;
+                }
+
+                topUsers.forEach((user, index) => {
+                    const userRank = getRank(user.totalScore || 0);
+                    const listItem = document.createElement('li');
+                    listItem.className = 'hof-user';
+
+                    if (index === 0) listItem.classList.add('hof-user-1');
+                    if (index === 1) listItem.classList.add('hof-user-2');
+                    if (index === 2) listItem.classList.add('hof-user-3');
+
+                    listItem.innerHTML = `
+                        <img src="${user.photoURL || 'https://placehold.co/40x40/EFEFEF/AAAAAA?text=?'}" alt="${user.displayName || 'User'}">
+                        <div class="hof-user-info">
+                            <div class="hof-user-name">${user.displayName || 'Anonymous User'}</div>
+                            <div class="hof-user-details">${userRank.emoji} ${userRank.name} - <b>${(user.weeklyScoreData.score || 0).toLocaleString()}</b> pts this week</div>
+                        </div>
+                    `;
+                    hallOfFameList.appendChild(listItem);
+                });
+            });
+        }
+
+
+        async function saveDataToFirestore() {
+            if (!currentUser) return;
+            const docRef = doc(db, "users", currentUser.uid);
+            await setDoc(docRef, userData, { merge: true });
+        }
+
+        // --- Authentication Functions ---
+        async function signIn() {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Authentication Error:", error);
+                showTemporaryMessage("Failed to sign in. Please check console.");
+            }
+        }
+
+        function signOutUser() {
+            signOut(auth);
+        }
+
+        onAuthStateChanged(auth, user => {
+            currentUser = user;
+            if (user) {
+                // User is signed in
+                userNameEl.textContent = user.displayName;
+                userPhotoEl.src = user.photoURL;
+                loginBtn.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                englishTranslationEl.disabled = false;
+                submitBtn.disabled = false;
+                skipBtn.disabled = false;
+                myWordsBtn.disabled = false; // NEW: Enable button
+                isInitialLoad = true; // Reset for new login
+                setupFirestoreListener(user.uid);
+                setupHallOfFameListener(); // NEW
+            } else {
+                // User is signed out
+                if (firestoreUnsubscribe) firestoreUnsubscribe();
+                if (hallOfFameUnsubscribe) hallOfFameUnsubscribe(); // NEW
+
+                loginBtn.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+                englishTranslationEl.disabled = true;
+                submitBtn.disabled = true;
+                skipBtn.disabled = true;
+                myWordsBtn.disabled = true; // NEW: Disable button
+                bengaliSentenceEl.textContent = "Please log in to start practicing.";
+                hallOfFameList.innerHTML = ''; // NEW
+                resetUI();
+            }
+        });
+
+        // --- UI Update Functions ---
+        function resetUI() {
+            userData = { totalScore: 0, dailyScoreData: {score: 0}, weeklyScoreData: {score: 0} };
+            updateAllUI();
+        }
+
+        function updateAllUI() {
+            updateRankAndScoreDisplay(); 
+            updateProgressBars();
+            updateWeeklyDayCount();
+        }
+
+        function updateWeeklyDayCount() {
+            const now = new Date();
+            let dayOfWeek = now.getDay(); // Sunday is 0, Monday is 1, etc.
+            if (dayOfWeek === 0) {
+                dayOfWeek = 7; // We want Sunday to be day 7
+            }
+            weeklyGoalLabel.textContent = `Weekly Goal ( Day ${dayOfWeek} )`;
+        }
+
+        function updateRankAndScoreDisplay() {
+            const score = userData.totalScore || 0;
+            const currentRank = getRank(score);
+            rankNameEl.textContent = `${currentRank.emoji} ${currentRank.name}`;
+            rankScoreEl.textContent = `Total Score: ${score.toLocaleString()}`;
+        }
+
+        function updateProgressBars() {
+            const dailyScore = userData.dailyScoreData?.score || 0;
+            const weeklyScore = userData.weeklyScoreData?.score || 0;
+
+            const dailyPercent = Math.min((dailyScore / DAILY_GOAL) * 100, 100);
+            dailyProgressBar.style.width = `${dailyPercent}%`;
+            dailyProgressText.textContent = `${dailyScore} / ${DAILY_GOAL}`;
+
+            const weeklyPercent = Math.min((weeklyScore / WEEKLY_GOAL) * 100, 100);
+            weeklyProgressBar.style.width = `${weeklyPercent}%`;
+            weeklyProgressText.textContent = `${weeklyScore} / ${WEEKLY_GOAL}`;
+        }
+
+        function displayCurrentErrors(errors) {
+            currentErrorsContainer.innerHTML = ''; 
+
+            if (errors && errors.length > 0) {
+                errors.forEach(errorText => {
+                    if (ERROR_CRITERIA.includes(errorText)) {
+                        const errorTag = document.createElement('div');
+                        errorTag.className = 'error-tag';
+                        errorTag.textContent = errorText;
+                        currentErrorsContainer.appendChild(errorTag);
+                    }
+                });
+                errorAnalysisSection.classList.remove('hidden');
+            } else {
+                errorAnalysisSection.classList.add('hidden');
+            }
+        }
+        
+        // --- NEW: Word Saving Feature ---
+        function handleSaveWord(event) {
+            if (!currentUser) return;
+            event.preventDefault();
+
+            const selection = window.getSelection();
+            if (!selection || selection.isCollapsed) return;
+            
+            // Clean the selected text
+            const word = selection.toString().trim().replace(/[.,?!;:]$/, '').toLowerCase();
+
+            if (word && word.length > 1) { // Check if word is valid
+                if (!userData.savedWords.includes(word)) {
+                    userData.savedWords.push(word);
+                    userData.savedWords.sort(); // Keep the list sorted
+                    saveDataToFirestore();
+                    showTemporaryMessage(`'${word}' saved!`, true);
+                } else {
+                    showTemporaryMessage(`'${word}' is already in your list.`);
+                }
+            }
+            window.getSelection().removeAllRanges(); // Deselect text
+        }
+
+        function renderSavedWords() {
+            savedWordsList.innerHTML = '';
+            const words = userData.savedWords || [];
+            if (words.length === 0) {
+                savedWordsList.innerHTML = '<li>No words saved yet. Double-click or right-click a word to save it.</li>';
+                return;
+            }
+            words.forEach(word => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${word}</span>
+                    <button class="delete-word-btn" data-word="${word}">&times;</button>
+                `;
+                savedWordsList.appendChild(li);
+            });
+        }
+        
+        function handleDeleteWord(event) {
+            if (event.target.classList.contains('delete-word-btn')) {
+                const wordToDelete = event.target.dataset.word;
+                userData.savedWords = userData.savedWords.filter(w => w !== wordToDelete);
+                saveDataToFirestore();
+                renderSavedWords(); // Re-render the list
+            }
+        }
+
+
+        // --- Core Application Logic ---
+        function getRank(score) {
+            const rankData = { 'General': '⭐️⭐️⭐️⭐️', 'Lieutenant General': '⭐️⭐️⭐️', 'Major General': '⭐️⭐️', 'Brigadier General': '⭐️', 'Colonel': '🦅', 'Lieutenant Colonel': '🦅', 'Major': '🎖️', 'Captain': '🎖️', 'First Lieutenant': '🔰', 'Second Lieutenant': '🔰' };
+            for (const rank of RANKS) {
+                if (score >= rank.minScore) return { name: rank.name, emoji: rankData[rank.name] || '' };
+            }
+            return { name: 'Second Lieutenant', emoji: '🔰' };
+        }
+
+        function getNewSentence() {
+            let usedIndices = userData.usedTranslationIndices || [];
+            let deletedIndices = userData.deletedSentenceIndices || [];
+            
+            let availableIndices = sentences.map((_, i) => i).filter(i => !usedIndices.includes(i) && !deletedIndices.includes(i));
+
+            if (availableIndices.length === 0) {
+                showTemporaryMessage("You've completed all available sentences! Resetting your progress. Great job!", true);
+                userData.usedTranslationIndices = [];
+                saveDataToFirestore(); 
+                
+                usedIndices = [];
+                availableIndices = sentences.map((_, i) => i).filter(i => !deletedIndices.includes(i));
+                
+                if (availableIndices.length === 0) {
+                    return null; 
+                }
+            }
+
+            const newSentenceIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            currentSentenceIndex = newSentenceIndex;
+            userData.usedTranslationIndices.push(newSentenceIndex);
+            return sentences[newSentenceIndex];
+        }
+
+        function displaySentence() {
+            if (!currentUser) return;
+            currentSentence = getNewSentence();
+
+            if (!currentSentence) {
+                bengaliSentenceEl.textContent = "You have practiced or deleted all available sentences.";
+                englishTranslationEl.value = '';
+                englishTranslationEl.disabled = true;
+                submitBtn.classList.remove('hidden');
+                submitBtn.disabled = true;
+                skipBtn.classList.remove('hidden');
+                skipBtn.disabled = true;
+                nextBtn.classList.add('hidden');
+                againBtn.classList.add('hidden');
+                deleteSentenceBtn.classList.add('hidden');
+                errorAnalysisSection.classList.add('hidden');
+                return;
+            }
+
+            bengaliSentenceEl.textContent = currentSentence.Bengali;
+            englishTranslationEl.value = '';
+            resultsEl.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            againBtn.classList.add('hidden');
+            deleteSentenceBtn.classList.add('hidden');
+            againBtn.disabled = false;
+            submitBtn.classList.remove('hidden');
+            submitBtn.disabled = false;
+            skipBtn.classList.remove('hidden');
+            skipBtn.disabled = false;
+            englishTranslationEl.disabled = false;
+
+            errorAnalysisSection.classList.add('hidden');
+            currentErrorsContainer.innerHTML = '';
+        }
+
+        async function fetchWithRetry(url, options, retries = 3, initialDelay = 1000) {
+            let lastError;
+            for (let i = 0; i < retries; i++) {
+                let response;
+                try {
+                    response = await fetch(url, options);
+                } catch (error) {
+                    lastError = error;
+                    if (i < retries - 1) {
+                        console.warn(`Network attempt ${i + 1} failed; retrying.`, error);
+                        await new Promise(resolve => setTimeout(resolve, initialDelay));
+                        initialDelay *= 2;
+                        continue;
+                    }
+                    throw error;
+                }
+
+                if (response.ok) return response;
+
+                let errorMessage = `API error: HTTP ${response.status}`;
+                try {
+                    const errorData = await response.clone().json();
+                    const detail = errorData?.error?.message || errorData?.error || errorData?.message;
+                    if (detail) errorMessage = `${errorMessage} — ${detail}`;
+                } catch (_) { /* Keep the HTTP status as the fallback. */ }
+
+                const retryable = [429, 500, 502, 503, 504].includes(response.status);
+                if (!retryable || i === retries - 1) throw new Error(errorMessage);
+
+                lastError = new Error(errorMessage);
+                const retryAfter = Number(response.headers.get('Retry-After'));
+                const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
+                    ? retryAfter * 1000
+                    : initialDelay;
+                console.warn(`Attempt ${i + 1} failed (${response.status}); retrying in ${waitMs}ms.`);
+                await new Promise(resolve => setTimeout(resolve, waitMs));
+                initialDelay *= 2;
+            }
+            throw lastError || new Error('The AI service could not be reached.');
+        }
+
+
+        async function getEvaluation() {
+            const userTranslation = englishTranslationEl.value.trim();
+            if (!userTranslation) { showTemporaryMessage("Please enter your translation."); return; }
+            if (AI_PROXY_URL.includes("")) {
+                showTemporaryMessage("Please finish the AI setup: deploy the Cloudflare Worker and set AI_PROXY_URL in index.html.");
+                return;
+            }
+
+            spinner.classList.remove('hidden');
+            submitBtn.disabled = true;
+            skipBtn.disabled = true;
+            englishTranslationEl.disabled = true;
+
+            const prompt = `You are an expert Bangla to English language tutor. Your goal is to help a student improve their translation skills. Respond ONLY in valid, minified JSON. The JSON object must have these keys: "score" (integer out of 10), "evaluation" (a detailed but concise explanation), "correction" (the ideal translation), and "errors_found" (an array of strings from this list: ${JSON.stringify(ERROR_CRITERIA)}). Any grammatical error, such as incorrect tense, incorrect word order, or major preposition mistakes, is a serious issue and MUST result in a score less than 6. These types of errors are not forgivable. Start the evaluation with a positive comment. Explain WHY a correction is better. - Original: ${currentSentence.Bengali} - Standard: ${currentSentence.English} - User's: ${userTranslation}`;
+
+            try {
+                if (!currentUser) throw new Error("Please sign in again before evaluating your translation.");
+                const firebaseIdToken = await currentUser.getIdToken();
+                const response = await fetchWithRetry(AI_PROXY_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${firebaseIdToken}`
+                    },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const responseData = await response.json();
+                if (typeof responseData.text !== 'string' || !responseData.text.trim()) {
+                    throw new Error(responseData.error?.message || responseData.error || "Invalid response from the AI service.");
+                }
+
+                let responseText = responseData.text;
+                const jsonString = responseText.slice(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+                const jsonResponse = JSON.parse(jsonString);
+
+                const attemptScore = jsonResponse.score;
+
+                if (attemptScore < 6) {
+                    userData.usedTranslationIndices = (userData.usedTranslationIndices || []).filter(index => index !== currentSentenceIndex);
+                    showTemporaryMessage("You'll see this sentence again to practice!");
+                }
+
+                const errorsFound = jsonResponse.errors_found || [];
+                displayCurrentErrors(errorsFound);
+
+                userData.totalScore = (userData.totalScore || 0) + attemptScore;
+                userData.dailyScoreData.score = (userData.dailyScoreData.score || 0) + attemptScore;
+                userData.weeklyScoreData.score = (userData.weeklyScoreData.score || 0) + attemptScore;
+
+                await saveDataToFirestore();
+
+                scoreEl.textContent = `Score for this sentence: ${attemptScore}/10`;
+                evaluationEl.textContent = jsonResponse.evaluation;
+                correctionEl.textContent = jsonResponse.correction;
+                resultsEl.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Fetch or Parsing Error:", error);
+                showTemporaryMessage(`An error occurred: ${error.message}`);
+            } finally {
+                spinner.classList.add('hidden');
+                submitBtn.classList.add('hidden');
+                skipBtn.classList.add('hidden');
+                nextBtn.classList.remove('hidden');
+                againBtn.classList.remove('hidden');
+                deleteSentenceBtn.classList.remove('hidden');
+            }
+        }
+
+        async function handleDeleteSentence() {
+            if (!currentUser || currentSentenceIndex === -1) return;
+
+            deleteSentenceBtn.disabled = true; 
+
+            if (!userData.deletedSentenceIndices.includes(currentSentenceIndex)) {
+                userData.deletedSentenceIndices.push(currentSentenceIndex);
+            }
+            userData.usedTranslationIndices = (userData.usedTranslationIndices || []).filter(index => index !== currentSentenceIndex);
+
+            try {
+                await saveDataToFirestore();
+                showTemporaryMessage("Sentence permanently removed.", true);
+                displaySentence();
+            } catch (error) {
+                console.error("Failed to delete sentence:", error);
+                userData.deletedSentenceIndices = userData.deletedSentenceIndices.filter(index => index !== currentSentenceIndex);
+                showTemporaryMessage("Could not remove sentence. Please try again.");
+                deleteSentenceBtn.disabled = false;
+            }
+        }
+
+
+        function showTemporaryMessage(message, isSuccess = false) {
+            const messageBox = document.createElement('div');
+            messageBox.textContent = message;
+            Object.assign(messageBox.style, { position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', backgroundColor: isSuccess ? '#34c759' : '#ff4d4d', color: 'white', padding: '10px 20px', borderRadius: '8px', zIndex: '1001', opacity: '0', transition: 'opacity 0.5s', textAlign: 'center' });
+            document.body.appendChild(messageBox);
+            setTimeout(() => { messageBox.style.opacity = '1'; }, 10);
+            setTimeout(() => {
+                messageBox.style.opacity = '0';
+                setTimeout(() => { document.body.removeChild(messageBox); }, 500);
+            }, 3000);
+        }
+
+        // --- Event Listeners & Initial Load ---
+        loginBtn.addEventListener('click', signIn);
+        logoutBtn.addEventListener('click', signOutUser);
+        submitBtn.addEventListener('click', getEvaluation);
+        nextBtn.addEventListener('click', displaySentence);
+        skipBtn.addEventListener('click', displaySentence);
+        deleteSentenceBtn.addEventListener('click', handleDeleteSentence);
+
+
+        // NEW: Word Saving Event Listeners
+        englishTranslationEl.addEventListener('dblclick', handleSaveWord);
+        englishTranslationEl.addEventListener('contextmenu', handleSaveWord);
+        resultsEl.addEventListener('dblclick', handleSaveWord);
+        resultsEl.addEventListener('contextmenu', handleSaveWord);
+        
+        // NEW: Modal Event Listeners
+        myWordsBtn.addEventListener('click', () => {
+            renderSavedWords();
+            wordListModal.style.display = 'flex';
+        });
+        closeModalBtn.addEventListener('click', () => {
+            wordListModal.style.display = 'none';
+        });
+        wordListModal.addEventListener('click', (event) => {
+            if (event.target === wordListModal) { // Close only if overlay is clicked
+                wordListModal.style.display = 'none';
+            }
+        });
+        savedWordsList.addEventListener('click', handleDeleteWord);
+
+
+        againBtn.addEventListener('click', async () => {
+            if (!currentUser || currentSentenceIndex === -1) return;
+
+            if (!userData.usedTranslationIndices) {
+                userData.usedTranslationIndices = [];
+            }
+
+            const initialLength = userData.usedTranslationIndices.length;
+            userData.usedTranslationIndices = userData.usedTranslationIndices.filter(index => index !== currentSentenceIndex);
+
+            if (userData.usedTranslationIndices.length < initialLength) {
+                try {
+                    await saveDataToFirestore();
+                    showTemporaryMessage("This sentence will be repeated for more practice!", true);
+                    againBtn.disabled = true;
+                } catch (error) {
+                    console.error("Failed to update sentence list:", error);
+                    userData.usedTranslationIndices.push(currentSentenceIndex);
+                    showTemporaryMessage("Could not save preference. Please try again.");
+                }
+            } else {
+                 showTemporaryMessage("This sentence is already set to repeat.", true);
+                 againBtn.disabled = true;
+            }
+        });
+
+        resetUI(); // Start with a clean slate before login
+    </script>
+</body>
+</html>
